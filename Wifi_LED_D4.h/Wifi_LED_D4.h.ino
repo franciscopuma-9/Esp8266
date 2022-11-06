@@ -1,22 +1,8 @@
-#include <DHT.h>
-#include <DHT_U.h>
 #include <ESP8266WiFi.h>
-#include <Ticker.h>
 
-#define DHTPIN D3
-#define ledWifi D4
-#define motorPin D1
-// DHT 
-DHT dht(DHTPIN, DHT22);
-float hume, temp;
+#include <Ticker.h> //led D4
+#define ledWifi D4 //led D4
 
-//SUELO
-const int AirValue = 720;   //you need to replace this value with Value_1
-const int WaterValue = 340;  //you need to replace this value with Value_2
-int soilMoistureValue = 0;
-int soilmoisturepercent=0;
-
-//Wifi
 
 String ssid = "Fibertel WiFi536";
 String password = "0041615824";
@@ -24,25 +10,17 @@ WiFiServer server(80);
 
 byte cont = 0;
 byte max_intentos = 50;
-//led
+
+//led D4
 Ticker tic_WifiLed;
 
-void parpadeoLedWifi(){
-  byte estado = digitalRead(ledWifi);
-  digitalWrite(ledWifi,!estado);
-}
+void setup_WIFI(){
+  //Serial.begin(9600);
+  //Serial.println("\n");
 
-void setup() {
-  //inicia Serial
-  pinMode(ledWifi,OUTPUT); 
-  Serial.begin(9600);
-  Serial.println("\n");
+  //LED D4
+  pinMode(ledWifi,OUTPUT);   
   tic_WifiLed.attach(0.2,parpadeoLedWifi);
-
-  //rele
-  pinMode (motorPin, OUTPUT); 
-  digitalWrite (motorPin, LOW); // mantener el motor apagado inicialmente 
-  
 
   //Wifi
   WiFi.begin(ssid,password);
@@ -72,54 +50,9 @@ void setup() {
   digitalWrite(ledWifi,HIGH);
 
   server.begin();
-  // DHT
-  dht.begin();
-  Serial.println("Reading From the Sensor ...");
-  delay(2000);
 }
 
-void loop() {
-  // DHT
-  hume = dht.readHumidity();
-  temp = dht.readTemperature();
-  Serial.print("\nTemperatura: ");
-  Serial.print(temp);
-  Serial.print(" Humedad: ");
-  Serial.print(hume);
-
-  //SUELO
-  soilMoistureValue = analogRead(A0);  //put Sensor insert into soil
-  Serial.print(" Moisture Value: ");
-  Serial.print(soilMoistureValue);
-  Serial.print(" Moisture percent: ");
-  soilmoisturepercent = map(soilMoistureValue, AirValue, WaterValue, 0, 100);
-  if(soilmoisturepercent >= 100)
-  {
-    Serial.print("100 %");
-  }
-  else if(soilmoisturepercent <=0)
-  {
-    Serial.print("0 %");
-  }
-  else if(soilmoisturepercent >0 && soilmoisturepercent < 100)
-  {
-    Serial.print(soilmoisturepercent);
-    Serial.print("%");    
-  }
-  
-    
-  //rele 
-
-   // mantener el motor apagado inicialmente 
-
-
-  //funcionamiento rele
-  if ( soilmoisturepercent <50) { digitalWrite (motorPin, HIGH); Serial.print(" Accionado");   } 
-  if ( soilmoisturepercent> 50 && soilmoisturepercent <55) { digitalWrite (motorPin, HIGH); Serial.print(" Medio");   } 
-  if ( soilmoisturepercent> 56) { digitalWrite (motorPin, LOW); Serial.print("Apagado");  }
-  delay(1000);
-
-  //wifi
+void loop_Wifi(){
   WiFiClient client = server.available();
   if (!client){
     return;
