@@ -1,20 +1,22 @@
+//incluimos todos los archivos de cabeceras creados por nosotros para modularizar el proyecto
 #include "dht.h"
-#include "HumedadSuelo.h"
-#include "Rele.h"
-#include "Wifi_LED_D4.h"
+#include "humedadSuelo.h"
+#include "wifiManager.h"
+#include "tipos.h"
+#include "ubidots.h"
+#include "motor.h"
 
 void setup() {
-  //inicia Serial
+  //inicia Serial para poder realizar pruebas
   Serial.begin(9600);
-  Serial.println("\n");
 
   setup_WIFI(); //funcion setup para el WIFI
 
-  setup_Rele(); //funcion para activar el pin del rele como salida
+  setup_Motor(); //funcion para activar el pin del rele como salida
 
   setup_DHT(); //funcion setup DHT
   
-  
+  setup_Ubidots(); //funcion setup de Ubidots
 }
 
 void loop() {
@@ -23,8 +25,7 @@ void loop() {
 
   loop_HumedadSuelo();//funcion loop de humedad del suelo y mapeo para obtener valores entre 0 y 100
 
-  loop_Rele();
+  loop_Motor(); //funcion loop para el funcionamiento de la bombita de agua
   
-  loop_Wifi();
-
+  loop_Ubidots(); //funcion loop de Ubidots para ver los datos desde la web
 }

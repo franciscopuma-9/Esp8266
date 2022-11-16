@@ -1,23 +1,22 @@
+//incluimos todos los archivos de cabeceras necesarios
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN D3
+#define DHT_PIN D3
 
-DHT dht(DHTPIN, DHT22);
-float humedad, temperatura;
+DHT dht(DHT_PIN, DHT22); //creo objeto dht y le paso los parametros del pin que se utilizo y el tipo de sensor DHT
+float humedad, temperatura; 
 
-// SETUP
+// SETUP DHT
 void setup_DHT(){
-  dht.begin();
-  Serial.println("Reading From the Sensor ...");
-  delay(2000);
-  
+  dht.begin();//inicio el sensor DHT
 }
 
-//LOOP
+//LOOP DHT
 void loop_DHT(){
-  humedad = dht.readHumidity();
-  temperatura = dht.readTemperature();
+  humedad = dht.readHumidity(); //funcion para leer humedad relativa
+  temperatura = dht.readTemperature(); //funcion para leer temperatura
+  
   Serial.print("\nTemperatura: ");
   Serial.print(temperatura);
   Serial.print(" Humedad: ");
